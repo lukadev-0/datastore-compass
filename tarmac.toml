@@ -1,0 +1,10 @@
+name = "datastore-compass"
+
+# Most projects will define some 'inputs'.
+# This tells Tarmac where to find assets that we'll use in our game.
+[[inputs]]
+glob = "assets/icons/*.png"
+codegen = true
+codegen-path = "src/assets.lua"
+codegen-base-path = "assets"
+packable = true

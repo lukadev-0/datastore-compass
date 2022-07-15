@@ -1,0 +1,13 @@
+[package]
+name = "luka/datastore-compass"
+version = "0.1.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+[dependencies]
+Roact = "roblox/roact@1.4.2"
+RoactHooks = "kampfkarren/roact-hooks@0.4.1"
+RoactRodux = "roblox/roact-rodux@0.3.0"
+Rodux = "roblox/rodux@3.0.0"
+Llama = "freddylist/llama@1.1.1"
+Promise = "evaera/promise@4.0.0"

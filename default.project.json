@@ -1,0 +1,10 @@
+{
+  "name": "DataStore Compass",
+  "tree": {
+    "$path": "Packages",
+
+    "DatastoreCompass": {
+      "$path": "src"
+    }
+  }
+}

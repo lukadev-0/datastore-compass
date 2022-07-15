@@ -1,0 +1,71 @@
+[inputs."assets/icons/Back.png"]
+hash = "8fb27e1fd3ae9c848134b1fd71b10fe821ec24a999778b6eb3f19811e3c9c30d"
+id = 10223805866
+slice = [[0, 0], [24, 24]]
+packable = true
+
+[inputs."assets/icons/Check.png"]
+hash = "3ce8f018917a49e16bc592b6e4214ec4b918d669116a83670f28f8658e9a775d"
+id = 10223805866
+slice = [[25, 0], [49, 24]]
+packable = true
+
+[inputs."assets/icons/Chevron.png"]
+hash = "0c982bd9adcefcc271fd4dc590bfa2080be9402374e46c9d768854ea3afc909b"
+id = 10223805866
+slice = [[75, 0], [95, 20]]
+packable = true
+
+[inputs."assets/icons/CurlyBraces.png"]
+hash = "16842528cdfa910dddcb2352d530367b2865d1012cf12ee64a034ced59f4e7fe"
+id = 10223805866
+slice = [[0, 25], [24, 49]]
+packable = true
+
+[inputs."assets/icons/Delete.png"]
+hash = "c196dc9a5fb908d58684a6704433a899fc05d49e3504679aaad38fdec2443b83"
+id = 10223805866
+slice = [[50, 25], [70, 45]]
+packable = true
+
+[inputs."assets/icons/Export.png"]
+hash = "a8156910a9996fbe51f100f82a60113e70d88d41f3c724fe30a9f039b1ec0ce8"
+id = 10223805866
+slice = [[25, 50], [45, 70]]
+packable = true
+
+[inputs."assets/icons/Folder.png"]
+hash = "ea29c3919607f74e79d719bed76cc263146bd3b642623db3d88cc0a3345d8aa6"
+id = 10223805866
+slice = [[50, 0], [74, 24]]
+packable = true
+
+[inputs."assets/icons/Import.png"]
+hash = "9bac718dddfa42a042f1bb404abc470074102b35b41b4ec47de02449ee28302b"
+id = 10223805866
+slice = [[0, 75], [20, 95]]
+packable = true
+
+[inputs."assets/icons/Menu.png"]
+hash = "caa718b714bddbfa88f6c37445a8a607e71172c879798929992d2482ffc5311e"
+id = 10223805866
+slice = [[25, 25], [49, 49]]
+packable = true
+
+[inputs."assets/icons/Refresh.png"]
+hash = "9309cfae0882fdbeb8e0a9d705503c529b28275ef0f4362cd5a4ceb21b62abe3"
+id = 10223805866
+slice = [[0, 50], [24, 74]]
+packable = true
+
+[inputs."assets/icons/Rewind.png"]
+hash = "c2f29c67c1fc697ed25c36acb55e95c845e9c7958f7831bd53aaa52d83a4acb3"
+id = 10223805866
+slice = [[96, 0], [116, 20]]
+packable = true
+
+[inputs."assets/icons/Search.png"]
+hash = "e516fc572a136228b8f3d958ae71e0e9c31fd2d97932b0512dd09e2b1ff926eb"
+id = 10223805866
+slice = [[75, 21], [95, 41]]
+packable = true

@@ -1,0 +1,17 @@
+{
+  "name": "DataStore Compass Test Place",
+  "tree": {
+    "$className": "DataModel",
+
+    "ServerStorage": {
+      "DataStore Compass": {
+        "$path": "default.project.json",
+        "$properties": {
+          "Attributes": {
+            "IsDev": { "Bool": true }
+          }
+        }
+      }
+    }
+  }
+}
