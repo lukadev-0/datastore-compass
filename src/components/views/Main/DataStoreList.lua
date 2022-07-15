@@ -11,6 +11,7 @@ local StudioTheme = require(script.Parent.Parent.Parent.StudioTheme)
 local LoadingIndicator = require(script.Parent.Parent.Parent.LoadingIndicator)
 local usePages = require(script.Parent.Parent.Parent.Parent.hooks.usePages)
 local DataStoreListItem = require(script.Parent.DataStoreListItem)
+local InfiniteScroller = require(script.Parent.Parent.Parent.InfiniteScroller)
 
 local e = Roact.createElement
 
@@ -20,7 +21,7 @@ local function DataStoreList(props, hooks)
     return Promise.try(function()
       return DataStoreService:ListDataStoresAsync(props.searchQuery)
     end)
-  end, {props.searchQuery})
+  end, {props.searchQuery, props.refreshTime})
 
   if pages.isLoading then
     return e(LoadingIndicator, {
@@ -77,10 +78,8 @@ local function DataStoreList(props, hooks)
       }),
     }),
 
-    Contents = e("Frame", {
-      Position = UDim2.new(0, 0, 0, 32),
-      Size = UDim2.new(1, 0, 1, -32),
-      BackgroundTransparency = 1,
+    Contents = e(InfiniteScroller, {
+      loadMore = pages.loadNextPage,
     }, {
       ListLayout = e("UIListLayout", {
         SortOrder = Enum.SortOrder.LayoutOrder,
@@ -90,9 +89,16 @@ local function DataStoreList(props, hooks)
 
       if #pages.items > 0
         then Roact.createFragment(
-          Llama.Dictionary.map(pages.items, function(item: DataStoreInfo, index)
+          Llama.Dictionary.map(pages.items, function(item: DataStoreInfo)
             return e(DataStoreListItem, {
               item = item,
+              onClick = function()
+                props.selectDataStore(
+                  if props.useOrdered
+                    then DataStoreService:GetOrderedDataStore(item.DataStoreName)
+                    else DataStoreService:GetDataStore(item.DataStoreName)
+                )
+              end,
             }), item.DataStoreName
           end)
         )
@@ -115,7 +121,17 @@ DataStoreList = RoactHooks.new(Roact)(DataStoreList)
 return RoactRodux.connect(
   function(state)
     return {
-      placeName = state.placeName,
+      refreshTime = state.refreshTime,
+    }
+  end,
+  function(dispatch)
+    return {
+      selectDataStore = function(dataStore)
+        dispatch({
+          type = "SelectDataStore",
+          dataStore = dataStore,
+        })
+      end,
     }
   end
 )(DataStoreList)

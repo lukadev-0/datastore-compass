@@ -1,6 +1,7 @@
 --!strict
 local Packages = script.Parent.Parent.Parent
 local Llama = require(Packages.Llama)
+local Promise = require(Packages.Promise)
 
 local usePromise = require(script.Parent.usePromise)
 
@@ -27,12 +28,14 @@ local function usePages(hooks, fn, dependencies: {any}?)
     return promise.promise
       :andThen(function(pages: Pages)
         if pages.IsFinished then
-          return
+          return true
         end
 
-        return pages:AdvanceToNextPageAsync():andThen(function()
+        return Promise.try(function()
+          pages:AdvanceToNextPageAsync()
+        end):andThen(function()
           local items = pages:GetCurrentPage()
-
+          
           setItems(function(currentItems)
             return Llama.List.concat(currentItems, items)
           end)

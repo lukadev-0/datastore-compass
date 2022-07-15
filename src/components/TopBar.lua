@@ -1,6 +1,7 @@
 local Packages = script.Parent.Parent.Parent
 local Roact = require(Packages.Roact)
 local RoactHooks = require(Packages.RoactHooks)
+local RoactRodux = require(Packages.RoactRodux)
 
 local StudioTheme = require(script.Parent.StudioTheme)
 local BreadcrumbItem = require(script.Parent.BreadcrumbItem)
@@ -29,7 +30,14 @@ local function TopBar(props, hooks)
       text = breadcrumb,
       active = i == #props.breadcrumbs,
       onClick = function()
-        print(breadcrumb)
+        if i == 2 then
+          props.deselectKey()
+        end
+
+        if i == 1 then
+          props.deselectKey()
+          props.deselectDataStore()
+        end
       end,
     }))
   end
@@ -50,6 +58,16 @@ local function TopBar(props, hooks)
 
         color = theme:GetColor(Enum.StudioStyleGuideColor.MainText),
         image = Assets.icons.Back,
+
+        [Roact.Event.Activated] = function()
+          if props.selectedKey then
+            return props.deselectKey()
+          end
+
+          if props.selectedDataStore then
+            return props.deselectDataStore()
+          end
+        end,
       }),
 
       Refresh = e(IconButton, {
@@ -58,6 +76,10 @@ local function TopBar(props, hooks)
 
         color = theme:GetColor(Enum.StudioStyleGuideColor.MainText),
         image = Assets.icons.Refresh,
+        
+        [Roact.Event.Activated] = function()
+          props.onRefresh()
+        end,
       }),
 
       Breadcrumbs = e("Frame", {
@@ -109,4 +131,36 @@ local function TopBar(props, hooks)
   })
 end
 
-return RoactHooks.new(Roact)(TopBar)
+TopBar = RoactHooks.new(Roact)(TopBar)
+
+return RoactRodux.connect(
+  function(state)
+    return {
+      selectedDataStore = state.selectedDataStore,
+      selectedKey = state.selectedKey,
+    }
+  end,
+  function(dispatch)
+    return {
+      onRefresh = function()
+        dispatch({
+          type = "Refresh",
+        })
+      end,
+
+      deselectDataStore = function()
+        dispatch({
+          type = "SelectDataStore",
+          dataStore = nil,
+        })
+      end,
+
+      deselectKey = function()
+        dispatch({
+          type = "SelectKey",
+          key = nil,
+        })
+      end,
+    }
+end
+)(TopBar)
