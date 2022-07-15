@@ -29,10 +29,11 @@ local function main(plugin, savedState)
 		"Open the DataStore Compass window",
     "rbxassetid://7245838712"
 	)
+	toggleButton.ClickableWhenViewportHidden = true
 
   local store = Rodux.Store.new(reducer, savedState)
 
-	local info = DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Float, false, false, 0, 0)
+	local info = DockWidgetPluginGuiInfo.new(Enum.InitialDockState.Float, false, false, 556, 240, 556, 240)
 	local gui = plugin:createDockWidgetPluginGui("DataStoreCompass" .. nameSuffix, info)
 	gui.Name = "DataStoreCompass" .. nameSuffix
 	gui.Title = "DataStore Compass" .. displaySuffix
