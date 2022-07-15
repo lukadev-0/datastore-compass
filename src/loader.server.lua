@@ -2,7 +2,7 @@
 
 -- sanity check
 if not plugin then
-	error("[DataStore Compass] was not run as plugin")
+  error("[DataStore Compass] was not run as plugin")
 end
 
 local source = script.Parent.Parent
@@ -33,128 +33,128 @@ if isDev then
 end
 
 local PluginFacade = {
-	_toolbars = {},
-	_pluginGuis = {},
-	_buttons = {},
+  _toolbars = {},
+  _pluginGuis = {},
+  _buttons = {},
   _watching = {},
-	_beforeUnload = nil,
-	isDev = isDev,
+  _beforeUnload = nil,
+  isDev = isDev,
 }
 
 function PluginFacade:toolbar(name)
-	if self._toolbars[name] then
-		return self._toolbars[name]
-	end
+  if self._toolbars[name] then
+    return self._toolbars[name]
+  end
 
-	local toolbar = plugin:CreateToolbar(name)
+  local toolbar = plugin:CreateToolbar(name)
 
-	self._toolbars[name] = toolbar
+  self._toolbars[name] = toolbar
 
-	return toolbar
+  return toolbar
 end
 
 function PluginFacade:button(toolbar, name, tooltip, icon)
-	local existingButtons = self._buttons[toolbar]
+  local existingButtons = self._buttons[toolbar]
 
-	if existingButtons then
-		local existingButton = existingButtons[name]
+  if existingButtons then
+    local existingButton = existingButtons[name]
 
-		if existingButton then
-			return existingButton
-		end
-	else
-		existingButtons = {}
-		self._buttons[toolbar] = existingButtons
-	end
+    if existingButton then
+      return existingButton
+    end
+  else
+    existingButtons = {}
+    self._buttons[toolbar] = existingButtons
+  end
 
-	local button = toolbar:CreateButton(name, tooltip, icon)
+  local button = toolbar:CreateButton(name, tooltip, icon)
 
-	existingButtons[name] = button
+  existingButtons[name] = button
 
-	return button
+  return button
 end
 
 function PluginFacade:createDockWidgetPluginGui(name, ...)
-	if self._pluginGuis[name] then
-		return self._pluginGuis[name]
-	end
+  if self._pluginGuis[name] then
+    return self._pluginGuis[name]
+  end
 
-	local gui = plugin:CreateDockWidgetPluginGui(name, ...)
-	self._pluginGuis[name] = gui
+  local gui = plugin:CreateDockWidgetPluginGui(name, ...)
+  self._pluginGuis[name] = gui
 
-	return gui
+  return gui
 end
 
 function PluginFacade:beforeUnload(callback)
-	self._beforeUnload = callback
+  self._beforeUnload = callback
 end
 
 function PluginFacade:_load(savedState)
-	local ok, result = pcall(require, root.DatastoreCompass.main)
+  local ok, result = pcall(require, root.DatastoreCompass.main)
 
-	if not ok then
-		warn("[DataStore Compass] plugin failed to load")
+  if not ok then
+    warn("[DataStore Compass] plugin failed to load")
     warn(" ", result)
-		return
-	end
+    return
+  end
 
-	local Plugin = result
+  local Plugin = result
 
-	ok, result = pcall(Plugin, PluginFacade, savedState)
+  ok, result = pcall(Plugin, PluginFacade, savedState)
 
-	if not ok then
-		warn("[DataStore Compass] error whilst running plugin")
+  if not ok then
+    warn("[DataStore Compass] error whilst running plugin")
     warn(" ", result)
-		return
-	end
+    return
+  end
 end
 
 function PluginFacade:unload()
-	if self._beforeUnload then
-		local saveState = self._beforeUnload()
-		self._beforeUnload = nil
+  if self._beforeUnload then
+    local saveState = self._beforeUnload()
+    self._beforeUnload = nil
 
-		return saveState
-	end
+    return saveState
+  end
 end
 
 function PluginFacade:_reload()
-	local saveState = self:unload()
-	root = source:Clone()
+  local saveState = self:unload()
+  root = source:Clone()
 
-	self:_load(saveState)
+  self:_load(saveState)
 end
 
 function PluginFacade:_watch(instance)
-	if self._watching[instance] then
-		return
-	end
+  if self._watching[instance] then
+    return
+  end
 
-	-- Don't watch ourselves!
-	if instance == script then
-		return
-	end
+  -- Don't watch ourselves!
+  if instance == script then
+    return
+  end
 
-	local changedConnection = instance.Changed:Connect(function()
-		print(
+  local changedConnection = instance.Changed:Connect(function()
+    print(
       "[DataStore Compass] reloading due to " .. instance
         :GetFullName()
         :gsub("^ServerStorage.DataStore Compass.", "")
     )
-		self:_reload()
-	end)
+    self:_reload()
+  end)
 
-	local childAddedConnection = instance.ChildAdded:Connect(function(child)
-		self:_watch(child)
-	end)
+  local childAddedConnection = instance.ChildAdded:Connect(function(child)
+    self:_watch(child)
+  end)
 
-	local connections = {changedConnection, childAddedConnection}
+  local connections = {changedConnection, childAddedConnection}
 
-	self._watching[instance] = connections
+  self._watching[instance] = connections
 
-	for _, child in instance:GetChildren() do
-		self:_watch(child)
-	end
+  for _, child in instance:GetChildren() do
+    self:_watch(child)
+  end
 end
 
 PluginFacade:_load()
