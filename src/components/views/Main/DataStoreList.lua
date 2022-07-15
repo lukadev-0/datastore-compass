@@ -23,13 +23,6 @@ local function DataStoreList(props, hooks)
     end)
   end, {props.searchQuery, props.refreshTime})
 
-  if pages.isLoading then
-    return e(LoadingIndicator, {
-      AnchorPoint = Vector2.new(0.5, 0.5),
-      Position = UDim2.new(0.5, 0, 0.5, 0),
-    })
-  end
-
   return Roact.createFragment({
     Header = e("Frame", {
       BackgroundTransparency = 1,
@@ -78,40 +71,45 @@ local function DataStoreList(props, hooks)
       }),
     }),
 
-    Contents = e(InfiniteScroller, {
-      loadMore = pages.loadNextPage,
-    }, {
-      ListLayout = e("UIListLayout", {
-        SortOrder = Enum.SortOrder.LayoutOrder,
-        FillDirection = Enum.FillDirection.Vertical,
-        Padding = UDim.new(0, 4),
-      }),
-
-      if #pages.items > 0
-        then Roact.createFragment(
-          Llama.Dictionary.map(pages.items, function(item: DataStoreInfo)
-            return e(DataStoreListItem, {
-              item = item,
-              onClick = function()
-                props.selectDataStore(
-                  if props.useOrdered
-                    then DataStoreService:GetOrderedDataStore(item.DataStoreName)
-                    else DataStoreService:GetDataStore(item.DataStoreName)
-                )
-              end,
-            }), item.DataStoreName
-          end)
-        )
-        else e("TextLabel", {
-          Size = UDim2.new(1, 0, 0, 50),
-          BackgroundTransparency = 1,
-          Text = "No Results",
-          TextSize = 16,
-          Font = Enum.Font.SourceSans,
-          TextColor3 = theme:GetColor(Enum.StudioStyleGuideColor.DimmedText),
-          TextXAlignment = Enum.TextXAlignment.Center,
-          TextYAlignment = Enum.TextYAlignment.Center,
+    Contents = if pages.isLoading
+      then e(LoadingIndicator, {
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        Position = UDim2.new(0.5, 0, 0.5, 0),
+      })
+      else e(InfiniteScroller, {
+        loadMore = pages.loadNextPage,
+      }, {
+        ListLayout = e("UIListLayout", {
+          SortOrder = Enum.SortOrder.LayoutOrder,
+          FillDirection = Enum.FillDirection.Vertical,
+          Padding = UDim.new(0, 4),
         }),
+
+        if #pages.items > 0
+          then Roact.createFragment(
+            Llama.Dictionary.map(pages.items, function(item: DataStoreInfo)
+              return e(DataStoreListItem, {
+                item = item,
+                onClick = function()
+                  props.selectDataStore(
+                    if props.useOrdered
+                      then DataStoreService:GetOrderedDataStore(item.DataStoreName)
+                      else DataStoreService:GetDataStore(item.DataStoreName)
+                  )
+                end,
+              }), item.DataStoreName
+            end)
+          )
+          else e("TextLabel", {
+            Size = UDim2.new(1, 0, 0, 50),
+            BackgroundTransparency = 1,
+            Text = "No Results",
+            TextSize = 16,
+            Font = Enum.Font.SourceSans,
+            TextColor3 = theme:GetColor(Enum.StudioStyleGuideColor.DimmedText),
+            TextXAlignment = Enum.TextXAlignment.Center,
+            TextYAlignment = Enum.TextYAlignment.Center,
+          }),
     })
   })
 end

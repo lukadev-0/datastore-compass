@@ -22,13 +22,6 @@ local function KeyList(props, hooks)
     end)
   end, {props.searchQuery, props.refreshTime})
 
-  if pages.isLoading then
-    return e(LoadingIndicator, {
-      AnchorPoint = Vector2.new(0.5, 0.5),
-      Position = UDim2.new(0.5, 0, 0.5, 0),
-    })
-  end
-
   return Roact.createFragment({
     Header = e("Frame", {
       BackgroundTransparency = 1,
@@ -55,29 +48,34 @@ local function KeyList(props, hooks)
       }),
     }),
 
-    Contents = e(InfiniteScroller, {
-      loadMore = pages.loadNextPage,
-    }, if #pages.items > 0
-        then Llama.Dictionary.map(pages.items, function(item: DataStoreKey)
-          return e(KeyListItem, {
-            item = item,
-            onClick = function()
-              props.selectKey(item.KeyName)
-            end,
-          }), item.KeyName
-        end)
-        else {
-          e("TextLabel", {
-            Size = UDim2.new(1, 0, 0, 50),
-            BackgroundTransparency = 1,
-            Text = "No Results",
-            TextSize = 16,
-            Font = Enum.Font.SourceSans,
-            TextColor3 = theme:GetColor(Enum.StudioStyleGuideColor.DimmedText),
-            TextXAlignment = Enum.TextXAlignment.Center,
-            TextYAlignment = Enum.TextYAlignment.Center,
-          })
-        }
+    Contents = if pages.isLoading
+      then e(LoadingIndicator, {
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        Position = UDim2.new(0.5, 0, 0.5, 0),
+      })
+      else e(InfiniteScroller, {
+        loadMore = pages.loadNextPage,
+      }, if #pages.items > 0
+          then Llama.Dictionary.map(pages.items, function(item: DataStoreKey)
+            return e(KeyListItem, {
+              item = item,
+              onClick = function()
+                props.selectKey(item.KeyName)
+              end,
+            }), item.KeyName
+          end)
+          else {
+            e("TextLabel", {
+              Size = UDim2.new(1, 0, 0, 50),
+              BackgroundTransparency = 1,
+              Text = "No Results",
+              TextSize = 16,
+              Font = Enum.Font.SourceSans,
+              TextColor3 = theme:GetColor(Enum.StudioStyleGuideColor.DimmedText),
+              TextXAlignment = Enum.TextXAlignment.Center,
+              TextYAlignment = Enum.TextYAlignment.Center,
+            })
+          }
     )
   })
 end
